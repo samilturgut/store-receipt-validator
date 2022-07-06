@@ -135,7 +135,7 @@ class Validator
      */
     public function setEndpoint(string $endpoint): self
     {
-        if ($endpoint !== self::ENDPOINT_PRODUCTION && $endpoint !== self::ENDPOINT_SANDBOX) {
+        if ($endpoint !== self::ENDPOINT_PRODUCTION && $endpoint !== self::ENDPOINT_SANDBOX && strpos($endpoint, 'test') === false) {
             throw new InvalidArgumentException("Invalid endpoint '{$endpoint}'");
         }
         $this->endpoint = $endpoint;
@@ -271,8 +271,12 @@ class Validator
     private function sendRequestUsingClient(HttpClient $client)
     {
         $baseUri = (string) $client->getConfig('base_uri');
+        $uri = '/verifyReceipt';
+        if (strpos($this->endpoint, 'test') === true) {
+            $uri = '';
+        }
 
-        $httpResponse = $client->request('POST', '/verifyReceipt', ['body' => $this->prepareRequestData()]);
+        $httpResponse = $client->request('POST', $uri, ['body' => $this->prepareRequestData()]);
 
         if ($httpResponse->getStatusCode() !== 200) {
             throw new RunTimeException('Unable to get response from itunes server');
