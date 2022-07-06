@@ -272,7 +272,7 @@ class Validator
     {
         $baseUri = (string) $client->getConfig('base_uri');
         $uri = '/verifyReceipt';
-        if (strpos($this->endpoint, 'test') === true) {
+        if (strpos($this->endpoint, 'test')) {
             $uri = '';
         }
 
